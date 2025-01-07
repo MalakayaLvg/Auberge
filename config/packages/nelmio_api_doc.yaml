@@ -1,0 +1,126 @@
+nelmio_api_doc:
+    documentation:
+        servers:
+            - url: https://localhost:8000/
+              description: API sur localhost
+        info:
+            title: API Auberge
+            description: Rendu API back-end symfony
+            version: 1.0.0
+            x-build: #CommitHash
+        tags:
+            - name: "Beds"
+              description: "Endpoints related to Beds"
+            - name: "Rooms"
+              description: "Endpoints related to Rooms"
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+            schemas:
+                Room:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: "The room ID"
+                        name:
+                            type: string
+                            description: "The name of the room"
+                        capacity:
+                            type: integer
+                            description: "The capacity of the room"
+                        beds:
+                            type: array
+                            items:
+                                $ref: "#/components/schemas/Bed"
+                            description: "List of beds in the room"
+                Bed:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: "The bed ID"
+                        booked:
+                            type: boolean
+                            description: "Whether the bed is booked"
+                        room:
+                            $ref: "#/components/schemas/Room"
+                Booking:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: "The booking ID"
+                        startingDate:
+                            type: string
+                            format: date
+                            description: "Starting date of the booking"
+                        endingDate:
+                            type: string
+                            format: date
+                            description: "Ending date of the booking"
+                        totalPrice:
+                            type: number
+                            format: float
+                            description: "Total price of the booking"
+                        status:
+                            type: string
+                            description: "Status of the booking"
+                        bed:
+                            $ref: "#/components/schemas/Bed"
+                User:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: "The user ID"
+                        username:
+                            type: string
+                            description: "The username of the user"
+                        phone:
+                            type: string
+                            description: "The phone number of the user"
+                        address:
+                            type: string
+                            description: "The address of the user"
+                Review:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: "The review ID"
+                        content:
+                            type: string
+                            description: "The content of the review"
+                        rating:
+                            type: integer
+                            description: "The rating of the review (1-5)"
+                        author:
+                            type: object
+                            properties:
+                                id:
+                                    type: integer
+                                    description: "The ID of the author"
+                                username:
+                                    type: string
+                                    description: "The username of the author"
+                        booking:
+                            $ref: "#/components/schemas/Booking"
+                PaymentIntentResponse:
+                    type: object
+                    properties:
+                        clientSecret:
+                            type: string
+                            description: "The client secret of the payment intent"
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+            - ^/register$
+            - ^/api/login$
+        host_patterns: []
+
+
