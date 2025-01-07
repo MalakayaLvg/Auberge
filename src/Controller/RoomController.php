@@ -15,8 +15,27 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
+use OpenApi\Attributes as OA;
+
 class RoomController extends AbstractController
 {
+
+    #[OA\Get(
+        path: '/api/room',
+        description: 'Retrieve a list of all rooms in the system.',
+        summary: 'Get all rooms',
+        tags: ['Room'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'List of rooms',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(ref: '#/components/schemas/Room')
+                )
+            )
+        ]
+    )]
     #[Route('/api/room', name: 'app_room')]
     public function index(RoomRepository $roomRepository): Response
     {
@@ -24,6 +43,29 @@ class RoomController extends AbstractController
         return $this->json($rooms,201, [], ['groups' => ['roomJson']]);
     }
 
+    #[OA\Post(
+        path: '/api/room/create',
+        description: 'Create a new room in the system.',
+        summary: 'Create a new room',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                ref: '#/components/schemas/Room'
+            )
+        ),
+        tags: ['Room'],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Room created successfully',
+                content: new OA\JsonContent(ref: '#/components/schemas/Room')
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthorized'
+            )
+        ]
+    )]
     #[Route('/api/room/create', name: 'app_room_create')]
     public function create(RoomRepository $roomRepository, Request $request, SerializerInterface $serializer, EntityManagerInterface $manager, Security $security): Response
     {
@@ -38,6 +80,27 @@ class RoomController extends AbstractController
         return $this->json($room,200, [], ['groups' => ['roomJson']]);
     }
 
+    #[OA\Put(
+        path: '/api/room/edit/{id}',
+        description: 'Edit an existing room by its ID.',
+        summary: 'Edit a room',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/Room')
+        ),
+        tags: ['Room'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Room updated successfully',
+                content: new OA\JsonContent(ref: '#/components/schemas/Room')
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Room not found'
+            )
+        ]
+    )]
     #[Route('/api/room/edit/{id}', name: 'app_room_edit', methods: 'PUT')]
     public function edit(Request $request, Room $room, RoomRepository $roomRepository, SerializerInterface $serializer, EntityManagerInterface $manager, Security $security): Response
     {
@@ -58,6 +121,27 @@ class RoomController extends AbstractController
 
     }
 
+    #[OA\Delete(
+        path: '/api/room/delete/{id}',
+        description: 'Delete a room by its ID.',
+        summary: 'Delete a room',
+        tags: ['Room'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Room deleted successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Room deleted successfully')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Room not found'
+            )
+        ]
+    )]
     #[Route('/api/room/delete/{id}', name: 'app_room_delete', methods: ['DELETE'])]
     public function delete(Request $request, Room $room, Security $security, EntityManagerInterface $manager): Response
     {
