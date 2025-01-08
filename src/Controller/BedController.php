@@ -25,6 +25,7 @@ class BedController extends AbstractController
         path: '/api/bed',
         description: 'Retrieve a list of all beds in the system.',
         summary: 'Get all beds',
+        security: [['Bearer' => []]],
         tags: ['Bed'],
         responses: [
             new OA\Response(
@@ -37,24 +38,26 @@ class BedController extends AbstractController
             )
         ]
     )]
-    #[Route('/api/bed', name: 'app_bed')]
     public function index(BedRepository $bedRepository): Response
     {
         $beds = $bedRepository->findAll();
-        return $this->json($beds,201, [], ['groups' => ['bedJson']]);
+        return $this->json($beds,200, [], ['groups' => ['bedJson']]);
     }
 
     #[OA\Post(
         path: '/api/bed/create',
         description: 'Create a new bed and associate it with a room.',
         summary: 'Create a new bed',
+        security: [['Bearer' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: 'room_id', type: 'integer', description: 'ID of the room'),
-                    new OA\Property(property: 'booked', type: 'boolean', description: 'Whether the bed is booked')
-                ]
+                    new OA\Property(property: 'number', type: 'integer', description: 'The bed number'),
+                    new OA\Property(property: 'pricePerNight', type: 'integer', description: 'The price per night for the bed'),
+                    new OA\Property(property: 'room_id', type: 'integer', description: 'The ID of the room to associate the bed with')
+                ],
+                type: 'object'
             )
         ),
         tags: ['Bed'],
@@ -99,9 +102,17 @@ class BedController extends AbstractController
         path: '/api/bed/edit/{id}',
         description: 'Edit an existing bed by its ID.',
         summary: 'Edit a bed',
+        security: [['Bearer' => []]],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: '#/components/schemas/Bed')
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'number', type: 'integer', description: 'The bed number'),
+                    new OA\Property(property: 'pricePerNight', type: 'integer', description: 'The price per night for the bed'),
+                    new OA\Property(property: 'room_id', type: 'integer', description: 'The ID of the room to associate the bed with')
+                ],
+                type: 'object'
+            )
         ),
         tags: ['Bed'],
         responses: [
@@ -132,16 +143,15 @@ class BedController extends AbstractController
 
         $manager->flush();
 
-        return $this->json($bed, 201);
+        return $this->json($bed, 200, [], ['groups' => ['bedJson']]);
 
     }
 
     #[OA\Delete(
-
-
         path: '/api/bed/delete/{id}',
         description: 'Delete a bed by its ID.',
         summary: 'Delete a bed',
+        security: [['Bearer' => []]],
         tags: ['Bed'],
         responses: [
             new OA\Response(

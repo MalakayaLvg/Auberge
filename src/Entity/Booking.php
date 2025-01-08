@@ -19,7 +19,7 @@ class Booking
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
-    #[Groups(["bookingJson,reviewJson"])]
+    #[Groups(["bookingJson"])]
     private ?Bed $bed = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

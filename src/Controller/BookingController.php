@@ -26,6 +26,7 @@ class BookingController extends AbstractController
         path: '/api/booking',
         description: 'Retrieve a list of all bookings in the system.',
         summary: 'Get all bookings',
+        security: [['Bearer' => []]],
         tags: ['Booking'],
         responses: [
             new OA\Response(
@@ -49,13 +50,26 @@ class BookingController extends AbstractController
         path: '/api/booking/create',
         description: 'Create a new booking for a specific bed.',
         summary: 'Create a new booking',
+        security: [['Bearer' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
                 properties: [
                     new OA\Property(property: 'bed_id', type: 'integer', description: 'ID of the bed'),
-                    new OA\Property(property: 'startingDate', type: 'string', format: 'date', description: 'Starting date of the booking'),
-                    new OA\Property(property: 'endingDate', type: 'string', format: 'date', description: 'Ending date of the booking')
+                    new OA\Property(
+                        property: 'startingDate',
+                        description: 'Starting date of the booking (format: YYYY-MM-DDTHH:MM:SS+TZ)',
+                        type: 'string',
+                        format: 'date-time',
+                        example: '2024-11-07T14:30:00+00:00'
+                    ),
+                    new OA\Property(
+                        property: 'endingDate',
+                        description: 'Ending date of the booking (format: YYYY-MM-DDTHH:MM:SS+TZ)',
+                        type: 'string',
+                        format: 'date-time',
+                        example: '2024-11-10T12:00:00+00:00'
+                    )
                 ]
             )
         ),
@@ -115,6 +129,7 @@ class BookingController extends AbstractController
         path: '/api/booking/delete/{id}',
         description: 'Delete an existing booking by its ID.',
         summary: 'Delete a booking',
+        security: [['Bearer' => []]],
         tags: ['Booking'],
         responses: [
             new OA\Response(
@@ -156,6 +171,7 @@ class BookingController extends AbstractController
         path: '/api/booking/edit/{id}',
         description: 'Edit an existing booking by its ID.',
         summary: 'Edit a booking',
+        security: [['Bearer' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(ref: '#/components/schemas/Booking')
@@ -198,6 +214,7 @@ class BookingController extends AbstractController
         path: '/api/booking/cancel/{id}',
         description: 'Cancel an existing booking by its ID.',
         summary: 'Cancel a booking',
+        security: [['Bearer' => []]],
         tags: ['Booking'],
         responses: [
             new OA\Response(
@@ -218,8 +235,8 @@ class BookingController extends AbstractController
     public function cancel($id,Booking $booking, EntityManagerInterface $manager, Security $security)
     {
         $user = $security->getUser();
-        if ($booking->getCustumer() !== $user) {
-            throw new AccessDeniedException('You are not allowed to delete this booking.');
+        if ($booking->getCustomer() !== $user) {
+            return $this->json(['error' => 'Your cant cancel this booking'], 404);
         }
         $booking = $manager->getRepository(Booking::class)->find($id);
 
@@ -244,6 +261,7 @@ class BookingController extends AbstractController
         path: '/api/booking/history',
         description: 'Retrieve the booking history of the currently authenticated user.',
         summary: 'Get booking history',
+        security: [['Bearer' => []]],
         tags: ['Booking'],
         responses: [
             new OA\Response(

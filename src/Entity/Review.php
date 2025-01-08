@@ -25,7 +25,6 @@ class Review
     private ?int $rating = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    #[Groups(["reviewJson"])]
     private ?User $author = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]

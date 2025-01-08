@@ -13,11 +13,12 @@ use OpenApi\Attributes as OA;
 
 class ProfileController extends AbstractController
 {
-    #[Route('/api/profile', name: 'app_profile')]
+    #[Route('/api/profile', name: 'app_profile', methods: ['GET'])]
     #[OA\Get(
         path: '/api/profile',
         description: 'Retrieve the profile information of the currently authenticated user.',
         summary: 'Get user profile',
+        security: [['Bearer' => []]],
         tags: ['Profile'],
         responses: [
             new OA\Response(
@@ -57,6 +58,7 @@ class ProfileController extends AbstractController
         path: '/api/profile/update',
         description: 'Update the profile information of the currently authenticated user.',
         summary: 'Update user profile',
+        security: [['Bearer' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(

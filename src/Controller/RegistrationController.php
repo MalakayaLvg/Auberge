@@ -25,8 +25,8 @@ class RegistrationController extends AbstractController
             required: true,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: 'username', type: 'string', example: 'john_doe'),
-                    new OA\Property(property: 'password', type: 'string', example: 'mypassword123'),
+                    new OA\Property(property: 'username', type: 'string', example: 'test'),
+                    new OA\Property(property: 'password', type: 'string', example: 'test'),
                 ],
                 type: 'object'
             )
@@ -75,7 +75,7 @@ class RegistrationController extends AbstractController
     }
 
     #[OA\Post(
-        path: '/api/login',
+        path: '/api/login_check',
         description: 'Logs in a user and returns a JWT token if credentials are valid.',
         summary: 'Authenticate a user',
         security: [],
@@ -83,8 +83,8 @@ class RegistrationController extends AbstractController
             required: true,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: 'username', type: 'string', example: 'john_doe'),
-                    new OA\Property(property: 'password', type: 'string', example: 'mypassword123'),
+                    new OA\Property(property: 'username', type: 'string', example: 'test'),
+                    new OA\Property(property: 'password', type: 'string', example: 'test'),
                 ],
                 type: 'object'
             )
@@ -111,7 +111,7 @@ class RegistrationController extends AbstractController
             )
         ]
     )]
-    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
+    #[Route('/api/login_check', name: 'api_login', methods: ['POST'])]
     public function login(): void
     {
 

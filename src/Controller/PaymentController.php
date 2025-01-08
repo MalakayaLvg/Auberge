@@ -25,6 +25,7 @@ class PaymentController extends AbstractController
         path: "/api/payment/create/intent",
         description: "Create a payment intent using Stripe API.",
         summary: "Create a payment intent",
+        security: [['Bearer' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -57,6 +58,6 @@ class PaymentController extends AbstractController
 
         $paymentIntent = $this->stripeService->createPaymentIntent($amount);
 
-        return $this->json(['clientSecret' => $paymentIntent->client_secret]);
+        return $this->json(['clientSecret' => $paymentIntent->client_secret, "message"=>"Payment intent created successfully"]);
     }
 }

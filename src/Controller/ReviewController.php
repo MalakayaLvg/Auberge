@@ -21,6 +21,7 @@ class ReviewController extends AbstractController
         path: '/api/review/',
         description: 'Retrieve all reviews in the system.',
         summary: 'Get all reviews',
+        security: [['Bearer' => []]],
         tags: ['Review'],
         responses: [
             new OA\Response(
@@ -37,7 +38,7 @@ class ReviewController extends AbstractController
     {
         $reviews = $reviewRepository->findAll();
 
-        return $this->json([$reviews], 200,[],["Groups" => ["reviewJson"]]);
+        return $this->json($reviews, 200,[],["groups" => ["reviewJson"]]);
     }
 
     #[Route('/api/review/create/booking/{id}', name: 'app_review_create', methods: ['POST'])]
@@ -45,6 +46,7 @@ class ReviewController extends AbstractController
         path: '/api/review/create/booking/{id}',
         description: 'Create a review linked to a specific booking.',
         summary: 'Create a review for a booking',
+        security: [['Bearer' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -95,14 +97,15 @@ class ReviewController extends AbstractController
         $em->persist($review);
         $em->flush();
 
-        return $this->json(['message' => 'Review created successfully'], 201);
+        return $this->json(['message' => 'Review created successfully', $review], 201, [], ["groups"=>["reviewJson"]]);
     }
 
-    #[Route('/api/review/moderate/{id}', name: 'app_review_moderate')]
+    #[Route('/api/review/moderate/{id}', name: 'app_review_moderate', methods: ['DELETE'])]
     #[OA\Delete(
         path: '/api/review/moderate/{id}',
         description: 'Delete a review by its ID.',
         summary: 'Moderate (delete) a review',
+        security: [['Bearer' => []]],
         tags: ['Review'],
         responses: [
             new OA\Response(
